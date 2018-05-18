@@ -18,6 +18,24 @@ $ pip3 install tinycolor.py
 $ [sudo] python3 setup.py install
 ```
 
+## 使用
+
+### import
+
+```python
+import tinycolor
+
+print(tinycolor.is_valid('#FFFFFF'))
+```
+
+### from ... import
+
+```python
+from tinycolor import *
+
+print(is_valid('#FFFFFF'))
+```
+
 ## 支持的色值形式
 
 ### Hex
