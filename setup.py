@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='tinycolor.py',
-    version='0.1.0',
+    version='0.1.1',
 
     author='WenryXu',
     author_email='wenryxu@outlook.com',

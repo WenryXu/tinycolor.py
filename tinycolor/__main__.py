@@ -1,11 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 
-__title__ = 'tinycolor.py'
-__license__ = 'MIT'
-__author__ = 'WenryXu (wenryxu@outlook.com)'
-__version__ = '0.0.9'
-
 import re
 import sys
 import math
