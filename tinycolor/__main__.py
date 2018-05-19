@@ -235,7 +235,7 @@ def is_light(color):
     return not is_dark(color)
 
 def main():
-    print(get_brightness('#123'))
+    pass
 
 if __name__ == '__main__':
     main()
