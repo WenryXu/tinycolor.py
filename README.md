@@ -133,7 +133,7 @@ to_rgb(color) #'rgb(255, 255, 255)'
 
 ### get_brightness
 
-返回颜色的感知亮度
+返回颜色的感知亮度，基于 [Web Content Accessibility Guidelines (Version 1.0)](https://www.w3.org/TR/AERT/#color-contrast) 的定义
 
 ```python
 color = '#000000'
@@ -141,6 +141,18 @@ get_brightness(color) # 0
 
 color = 'rgb(255, 255, 255)'
 get_brightness(color) # 255
+```
+
+### get_luminance
+
+返回颜色的感知亮度，基于 [Web Content Accessibility Guidelines (Version 2.0)](https://www.w3.org/TR/2008/REC-WCAG20-20081211/#contrast-ratiodef) 的定义
+
+```python
+color = '#000000'
+get_luminance(color) # 0
+
+color = 'rgb(255, 255, 255)'
+get_luminance(color) # 1
 ```
 
 ### is_dark

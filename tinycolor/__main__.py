@@ -8,6 +8,7 @@ __version__ = '0.0.9'
 
 import re
 import sys
+import math
 
 def color_strip(color):
     """ 去除字符串中的多余空格
@@ -168,11 +169,44 @@ def get_brightness(color):
 
     返回值
     ------
-    int
+    float
         返回颜色的感知亮度，范围在 0 - 255 之间
     """
     r, g, b = to_r_g_b(color)
     return (r * 299 + g * 587 + b * 114) / 1000
+
+def get_luminance(color):
+    """ 返回颜色的感知亮度
+
+    https://www.w3.org/TR/2008/REC-WCAG20-20081211/#contrast-ratiodef
+
+    参数
+    ----
+    color : str
+
+    返回值
+    ------
+    float
+        返回颜色的感知亮度，范围在 0 - 1 之间
+    """
+    r, g, b = to_r_g_b(color)
+    Rs = r / 255
+    Gs = g / 255
+    Bs = b / 255
+    if Rs <= 0.03928:
+        R = Rs / 12.92
+    else:
+        R = math.pow(((Rs + 0.055) / 1.055), 2.4)
+    if Gs <= 0.03928:
+        G = Gs / 12.92
+    else:
+        G = math.pow(((Gs + 0.055) / 1.055), 2.4)
+    if Bs <= 0.03928:
+        B = Bs / 12.92
+    else:
+        B = math.pow(((Bs + 0.055) / 1.055), 2.4)
+
+    return (0.2126 * R) + (0.7152 * G) + (0.0722 * B)
 
 def is_dark(color):
     """ 返回颜色的感知亮度是否为暗
@@ -201,7 +235,7 @@ def is_light(color):
     return not is_dark(color)
 
 def main():
-    pass
+    print(get_brightness('#123'))
 
 if __name__ == '__main__':
     main()
