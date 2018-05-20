@@ -5,15 +5,15 @@ import re
 import sys
 import math
 
-def color_strip(color):
+def _color_strip(color):
     """ 去除字符串中的多余空格
 
-    参数
-    ----
+    Parameters
+    ----------
     color : str
 
-    返回值
-    ------
+    Returns
+    -------
     str
         返回去除了空格的颜色字符串
     """
@@ -24,17 +24,25 @@ def get_format(color):
 
     如果获取不到格式，则抛出一个 RuntimeError
 
-    参数
-    ----
+    Parameters
+    ----------
     color : str
 
-    返回值
-    ------
+    Returns
+    -------
     str
         如果颜色为 16 进制格式色值，则返回 'Hex'
         如果颜色为 RGB 格式色值，则返回 'RGB'
+
+    Notes
+    -----
+    关心 Alpha 通道
+
+    Raise
+    -----
+    RuntimeError: Not a color!
     """
-    color = color_strip(color)
+    color = _color_strip(color)
 
     if re.match(r'(^#[a-f0-9]{6}$)|(^#[a-f0-9]{3}$)', color, re.I) != None:
         return 'Hex'
@@ -46,14 +54,22 @@ def get_format(color):
 def is_valid(color):
     """ 判断颜色格式是否合法
 
-    参数
-    ----
+    Parameters
+    ----------
     color : str
 
-    返回值
-    ------
+    Returns
+    -------
     bool
         合法则返回 True，否则返回 False
+
+    See Also
+    --------
+    get_format
+
+    Notes
+    -----
+    不关心 Alpha 通道
     """
     try:
        get_format(color)
@@ -67,16 +83,28 @@ def short_hex_to_long(color):
 
     如果参数不是十六进制色值，则抛出一个 RuntimeError
 
-    参数
-    ----
+    Parameters
+    ----------
     color : str
 
-    返回值
-    ------
+    Returns
+    -------
     str
         返回转换后的十六进制色值，字母为大写字母
+
+    See Also
+    --------
+    get_format
+
+    Notes
+    -----
+    关心 Alpha 通道
+
+    Raise
+    -----
+    RuntimeError: Not a hex color!
     """
-    color = color_strip(color)
+    color = _color_strip(color)
 
     if get_format(color) is 'Hex':
         if len(color) is 4:
@@ -92,17 +120,25 @@ def short_hex_to_long(color):
 def to_r_g_b(color):
     """ 分别获取颜色 R、G、B 三通道的十进制色值
 
-    参数
-    -----
+    Parameters
+    ----------
     color : str
 
-    返回值
-    ------
+    Returns
+    -------
     r : int
     g : int
     b : int
+
+    See Also
+    --------
+    get_format, short_hex_to_long
+
+    Notes
+    -----
+    不关心 Alpha 通道
     """
-    color = color_strip(color)
+    color = _color_strip(color)
 
     if get_format(color) is 'Hex':
         color = short_hex_to_long(color)
@@ -117,14 +153,22 @@ def to_r_g_b(color):
 def to_hex(color):
     """ 将颜色转换为十六进制色值
 
-    参数
-    ----
+    Parameters
+    ----------
     color : str
 
-    返回值
-    ------
+    Returns
+    -------
     str
         返回转换后的十六进制色值，字母为大写字母
+
+    See Also
+    --------
+    get_format, short_hex_to_long, to_r_g_b
+
+    Notes
+    -----
+    不关心 Alpha 通道
     """
     if get_format(color) is 'Hex':
         return short_hex_to_long(color)
@@ -141,14 +185,22 @@ def to_hex(color):
 def to_rgb(color):
     """ 将颜色转换为 RGB 格式色值
 
-    参数
-    ----
+    Parameters
+    ----------
     color : str
 
-    返回值
-    ------
+    Returns
+    -------
     str
         返回转换后的 RGB 格式色值
+
+    See Also
+    --------
+    to_r_g_b
+
+    Notes
+    -----
+    不关心 Alpha 通道
     """
     r, g, b = to_r_g_b(color)
     return 'rgb(' + str(r) + ', ' + str(g) + ', ' + str(b) + ')'
@@ -158,14 +210,22 @@ def get_brightness(color):
 
     https://www.w3.org/TR/AERT/#color-contrast
 
-    参数
-    ----
+    Parameters
+    ----------
     color : str
 
-    返回值
-    ------
+    Returns
+    -------
     float
         返回颜色的感知亮度，范围在 0 - 255 之间
+
+    See Also
+    --------
+    to_r_g_b
+
+    Notes
+    -----
+    不关心 Alpha 通道
     """
     r, g, b = to_r_g_b(color)
     return (r * 299 + g * 587 + b * 114) / 1000
@@ -175,14 +235,22 @@ def get_luminance(color):
 
     https://www.w3.org/TR/2008/REC-WCAG20-20081211/#contrast-ratiodef
 
-    参数
-    ----
+    Parameters
+    ----------
     color : str
 
-    返回值
-    ------
+    Returns
+    -------
     float
         返回颜色的感知亮度，范围在 0 - 1 之间
+
+    See Also
+    --------
+    to_r_g_b
+
+    Notes
+    -----
+    不关心 Alpha 通道
     """
     r, g, b = to_r_g_b(color)
     Rs = r / 255
@@ -206,26 +274,42 @@ def get_luminance(color):
 def is_dark(color):
     """ 返回颜色的感知亮度是否为暗
 
-    参数
-    ----
+    Parameters
+    ----------
     color : str
 
-    返回值
-    ------
+    Returns
+    -------
     bool
+
+    See Also
+    --------
+    get_brightness
+
+    Notes
+    -----
+    不关心 Alpha 通道
     """
     return True if get_brightness(color) < 128 else False
 
 def is_light(color):
     """ 返回颜色的感知亮度是否为亮
 
-    参数
-    ----
+    Parameters
+    ----------
     color : str
 
-    返回值
-    ------
+    Returns
+    -------
     bool
+
+    See Also
+    --------
+    is_dark
+
+    Notes
+    -----
+    不关心 Alpha 通道
     """
     return not is_dark(color)
 
