@@ -85,7 +85,7 @@ is_valid(color) # False
 
 ### short_hex_to_long
 
-将短十六进制色值（三位）转换为长十六进制色值（六位）
+将短 Hex 或 8-digit Hex 格式色值转换为长 Hex 或 8-digit Hex 格式色值
 
 ```python
 color = '#FFF'
@@ -112,7 +112,7 @@ to_r_g_b(color) # 255, 255, 255
 
 ### to_hex
 
-将颜色转换为十六进制色值
+将颜色转换为 Hex 格式色值
 
 ```python
 color = 'rgb(255, 255, 255)'
