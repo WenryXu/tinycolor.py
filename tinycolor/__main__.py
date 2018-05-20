@@ -102,7 +102,7 @@ def short_hex_to_long(color):
 
     Raise
     -----
-    RuntimeError: Not a color!
+    RuntimeError: Not a hex color!
     """
     color = _color_strip(color)
 
