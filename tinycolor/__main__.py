@@ -275,7 +275,7 @@ def to_hex(color):
         return ('#' + r + g + b).upper()
 
 def to_hex8(color):
-    """ 将颜色转换为 Hex8 格式色值
+    """ 将颜色转换为 8-digit Hex 格式色值
 
     Parameters
     ----------
@@ -284,7 +284,7 @@ def to_hex8(color):
     Returns
     -------
     str
-        返回转换后的 Hex8 格式色值，字母为大写字母
+        返回转换后的 8-digit Hex 格式色值，字母为大写字母
 
     See Also
     --------
