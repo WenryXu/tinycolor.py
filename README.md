@@ -38,17 +38,20 @@ print(is_valid('#FFFFFF'))
 
 ## 支持的色值形式
 
-### Hex
+### Hex、8-digit Hex
 
 ```plain
 #FFF
 #FFFFFF
+#FFFC
+#FFFFFFCC
 ```
 
-### RGB
+### RGB、RGBA
 
 ```plain
 rgb(255, 255, 255)
+rgba(255, 255, 255, .8)
 ```
 
 ## 方法
