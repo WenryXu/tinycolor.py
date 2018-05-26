@@ -111,6 +111,12 @@ to_r_g_b(color) # 255, 255, 255
 
 color = 'rgb(255, 255, 255)'
 to_r_g_b(color) # 255, 255, 255
+
+color = '#FFFFFFCC'
+to_r_g_b(color) # 255, 255, 255
+
+color = 'rgba(255, 255, 255, .5)'
+to_r_g_b(color) # 255, 255, 255
 ```
 
 ### to_r_g_b_a
@@ -123,6 +129,12 @@ to_r_g_b_a(color) # 255, 255, 255, 0.8
 
 color = 'rgba(255, 255, 255, .5)'
 to_r_g_b_a(color) # 255, 255, 255, 0.5
+
+color = '#FFFFFF'
+to_r_g_b_a(color) # 255, 255, 255, 1
+
+color = 'rgb(255, 255, 255)'
+to_r_g_b_a(color) # 255, 255, 255, 1
 ```
 
 ### to_hex
@@ -134,6 +146,12 @@ color = 'rgb(255, 255, 255)'
 to_hex(color) # '#FFFFFF'
 
 color = '#FFF'
+to_hex(color) # '#FFFFFF'
+
+color = 'rgb(255, 255, 255, .8)'
+to_hex(color) # '#FFFFFF'
+
+color = '#FFFC'
 to_hex(color) # '#FFFFFF'
 ```
 
@@ -147,6 +165,12 @@ to_hex8(color) # '#FFFFFFCC'
 
 color = '#FFFC'
 to_hex8(color) # '#FFFFFFCC'
+
+color = 'rgb(255, 255, 255)'
+to_hex8(color) # '#FFFFFFFF'
+
+color = '#FFF'
+to_hex8(color) # '#FFFFFFFF'
 ```
 
 ### to_rgb

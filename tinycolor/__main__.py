@@ -158,23 +158,15 @@ def to_r_g_b(color):
 
     See Also
     --------
-    get_format, short_hex_to_long
+    to_r_g_b_a
 
     Notes
     -----
     不关心 Alpha 通道
     """
-    color = _color_strip(color)
+    r, g, b, a = to_r_g_b_a(color)
 
-    if get_format(color) is 'Hex':
-        color = short_hex_to_long(color)
-        r = int(color[1:3], 16)
-        g = int(color[3:5], 16)
-        b = int(color[5:7], 16)
-    elif get_format(color) is 'RGB':
-        r, g, b = color[4:-1].split(',')
-
-    return int(r), int(g), int(b)
+    return r, g, b
 
 def to_r_g_b_a(color):
     """ 分别获取颜色 R、G、B 三通道与 Alpha 通道的十进制色值
@@ -256,23 +248,13 @@ def to_hex(color):
 
     See Also
     --------
-    get_format, short_hex_to_long, to_r_g_b
+    to_hex8
 
     Notes
     -----
     不关心 Alpha 通道
     """
-    if get_format(color) is 'Hex':
-        return short_hex_to_long(color)
-    else:
-        r, g, b = to_r_g_b(color)
-        r = str(hex(r)).replace('0x', '')
-        g = str(hex(g)).replace('0x', '')
-        b = str(hex(b)).replace('0x', '')
-        r = '0' + r if len(r) is 1 else r
-        g = '0' + g if len(g) is 1 else g
-        b = '0' + b if len(b) is 1 else b
-        return ('#' + r + g + b).upper()
+    return to_hex8(color)[:-2]
 
 def to_hex8(color):
     """ 将颜色转换为 8-digit Hex 格式色值
