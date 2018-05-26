@@ -31,8 +31,10 @@ def get_format(color):
     Returns
     -------
     str
-        如果颜色为 16 进制格式色值，则返回 'Hex'
+        如果颜色为 Hex 格式色值，则返回 'Hex'
+        如果颜色为 8-digit Hex 格式色值，则返回 'Hex8'
         如果颜色为 RGB 格式色值，则返回 'RGB'
+        如果颜色为 RGBA 格式色值，则返回 'RGBA'
 
     Notes
     -----
@@ -44,10 +46,25 @@ def get_format(color):
     """
     color = _color_strip(color)
 
-    if re.match(r'(^#[a-f0-9]{6}$)|(^#[a-f0-9]{3}$)', color, re.I) != None:
+    regex_integer = "[-\\+]?\\d+%?"
+    regex_number = "[-\\+]?\\d*\\.\\d+%?"
+    regex_unit = "(?:" + regex_number + ")|(?:" + regex_integer + ")"
+
+    regex_match3 = "[\\s|\\(]+(" + regex_unit + ")[,|\\s]+(" + regex_unit + ")[,|\\s]+(" + regex_unit + ")\\s*\\)?"
+    regex_match4 = "[\\s|\\(]+(" + regex_unit + ")[,|\\s]+(" + regex_unit + ")[,|\\s]+(" + regex_unit + ")[,|\\s]+(" + regex_unit + ")\\s*\\)?"
+
+    if re.match(r'^#?([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$', color, re.I) != None: # Hex3
         return 'Hex'
-    elif re.match(r'(^rgb\((25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9]),(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9]),(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9])\))', color, re.I) != None:
+    elif re.match(r'^#?([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$', color, re.I) != None: # Hex6
+        return 'Hex'
+    elif re.match(r'^#?([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$', color, re.I) != None: # Hex4
+        return 'Hex8'
+    elif re.match(r'^#?([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$', color, re.I) != None: # Hex8
+        return 'Hex8'
+    elif re.match(r'rgb' + regex_match3, color, re.I) != None:
         return 'RGB'
+    elif re.match(r'rgba' + regex_match4, color, re.I) != None:
+        return 'RGBA'
     else:
         raise RuntimeError('Not a color!')
 
@@ -79,9 +96,9 @@ def is_valid(color):
         return True
 
 def short_hex_to_long(color):
-    """ 将短十六进制色值（三位）转换为长十六进制色值（六位）
+    """ 将短 Hex 或 8-digit Hex 格式色值转换为长 Hex 或 8-digit Hex 格式色值
 
-    如果参数不是十六进制色值，则抛出一个 RuntimeError
+    如果参数不是 Hex 或 8-digit Hex 格式色值，则抛出一个 RuntimeError
 
     Parameters
     ----------
@@ -90,7 +107,7 @@ def short_hex_to_long(color):
     Returns
     -------
     str
-        返回转换后的十六进制色值，字母为大写字母
+        返回转换后的 Hex 或 8-digit Hex 格式色值，字母为大写字母
 
     See Also
     --------
@@ -112,6 +129,15 @@ def short_hex_to_long(color):
             g = color[2] * 2
             b = color[3] * 2
             return ('#' + r + g + b).upper()
+        else:
+            return color.upper()
+    elif get_format(color) is 'Hex8':
+        if len(color) is 5:
+            r = color[1] * 2
+            g = color[2] * 2
+            b = color[3] * 2
+            a = color[4] * 2
+            return ('#' + r + g + b + a).upper()
         else:
             return color.upper()
     else:
@@ -150,8 +176,74 @@ def to_r_g_b(color):
 
     return int(r), int(g), int(b)
 
+def to_r_g_b_a(color):
+    """ 分别获取颜色 R、G、B 三通道与 Alpha 通道的十进制色值
+
+    Parameters
+    ----------
+    color : str
+
+    Returns
+    -------
+    r : int
+    g : int
+    b : int
+    a : float
+
+    See Also
+    --------
+    get_format, short_hex_to_long
+
+    Notes
+    -----
+    关心 Alpha 通道
+    """
+    color = _color_strip(color)
+
+    if get_format(color) is 'Hex':
+        color = short_hex_to_long(color)
+        r = int(color[1:3], 16)
+        g = int(color[3:5], 16)
+        b = int(color[5:7], 16)
+        a = 1
+    elif get_format(color) is 'Hex8':
+        color = short_hex_to_long(color)
+        r = int(color[1:3], 16)
+        g = int(color[3:5], 16)
+        b = int(color[5:7], 16)
+        if color[8] is '0':
+            a = color[7]
+        else:
+            a = color[7:9]
+        a = round(int(a, 16) / 255, 2)
+    elif get_format(color) is 'RGB':
+        r, g, b = color[4:-1].split(',')
+        a = 1
+    elif get_format(color) is 'RGBA':
+        r, g, b, a = color[5:-1].split(',')
+        try:
+            int(a)
+        except ValueError:
+            a = float(a)
+        else:
+            a = int(a)
+
+    if float(a) >= 1:
+        a = 1
+    elif float(a) < 0:
+        a = 0
+
+    if int(a) != 0:
+        if math.fmod(a, int(a)) is 0:
+            a = int(a)
+
+    if a == 0:
+        a = 0
+
+    return int(r), int(g), int(b), a
+
 def to_hex(color):
-    """ 将颜色转换为十六进制色值
+    """ 将颜色转换为 Hex 格式色值
 
     Parameters
     ----------
@@ -160,7 +252,7 @@ def to_hex(color):
     Returns
     -------
     str
-        返回转换后的十六进制色值，字母为大写字母
+        返回转换后的 Hex 格式色值，字母为大写字母
 
     See Also
     --------
@@ -181,6 +273,47 @@ def to_hex(color):
         g = '0' + g if len(g) is 1 else g
         b = '0' + b if len(b) is 1 else b
         return ('#' + r + g + b).upper()
+
+def to_hex8(color):
+    """ 将颜色转换为 8-digit Hex 格式色值
+
+    Parameters
+    ----------
+    color : str
+
+    Returns
+    -------
+    str
+        返回转换后的 8-digit Hex 格式色值，字母为大写字母
+
+    See Also
+    --------
+    get_format, short_hex_to_long, to_r_g_b_a
+
+    Notes
+    -----
+    关心 Alpha 通道
+    """
+    if get_format(color) is 'Hex8':
+        return short_hex_to_long(color)
+    else:
+        r, g, b, a = to_r_g_b_a(color)
+        r = str(hex(r)).replace('0x', '')
+        g = str(hex(g)).replace('0x', '')
+        b = str(hex(b)).replace('0x', '')
+        r = '0' + r if len(r) is 1 else r
+        g = '0' + g if len(g) is 1 else g
+        b = '0' + b if len(b) is 1 else b
+
+        if a == 0:
+            a = '00'
+        elif a == 1:
+            a = 'FF'
+        else:
+            a = str(hex(int(round(255 * a / 100, 2) * 100))).replace('0x', '')
+            a = a + '0' if len(a) is 1 else a
+
+        return ('#' + r + g + b + a).upper()
 
 def to_rgb(color):
     """ 将颜色转换为 RGB 格式色值
@@ -204,6 +337,29 @@ def to_rgb(color):
     """
     r, g, b = to_r_g_b(color)
     return 'rgb(' + str(r) + ', ' + str(g) + ', ' + str(b) + ')'
+
+def to_rgba(color):
+    """ 将颜色转换为 RGBA 格式色值
+
+    Parameters
+    ----------
+    color : str
+
+    Returns
+    -------
+    str
+        返回转换后的 RGBA 格式色值
+
+    See Also
+    --------
+    to_r_g_b_a
+
+    Notes
+    -----
+    关心 Alpha 通道
+    """
+    r, g, b, a = to_r_g_b_a(color)
+    return 'rgb(' + str(r) + ', ' + str(g) + ', ' + str(b) + ', ' + str(a) + ')'
 
 def get_brightness(color):
     """ 返回颜色的感知亮度

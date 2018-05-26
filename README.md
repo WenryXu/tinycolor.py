@@ -85,7 +85,7 @@ is_valid(color) # False
 
 ### short_hex_to_long
 
-将短十六进制色值（三位）转换为长十六进制色值（六位）
+将短 Hex 或 8-digit Hex 格式色值转换为长 Hex 或 8-digit Hex 格式色值
 
 ```python
 color = '#FFF'
@@ -110,9 +110,21 @@ color = 'rgb(255, 255, 255)'
 to_r_g_b(color) # 255, 255, 255
 ```
 
+### to_r_g_b_a
+
+分别获取颜色 R、G、B、Alpha 四通道的十进制色值
+
+```python
+color = '#FFFFFFCC'
+to_r_g_b_a(color) # 255, 255, 255, 0.8
+
+color = 'rgba(255, 255, 255, .5)'
+to_r_g_b_a(color) # 255, 255, 255, 0.5
+```
+
 ### to_hex
 
-将颜色转换为十六进制色值
+将颜色转换为 Hex 格式色值
 
 ```python
 color = 'rgb(255, 255, 255)'
@@ -122,13 +134,37 @@ color = '#FFF'
 to_hex(color) # '#FFFFFF'
 ```
 
+### to_hex8
+
+将颜色转换为 8-digit Hex 格式色值
+
+```python
+color = 'rgb(255, 255, 255, .8)'
+to_hex8(color) # '#FFFFFFCC'
+
+color = '#FFFC'
+to_hex8(color) # '#FFFFFFCC'
+```
+
 ### to_rgb
 
 将颜色转换为 RGB 格式色值
 
 ```python
 color = '#FFFFFF'
-to_rgb(color) #'rgb(255, 255, 255)'
+to_rgb(color) # 'rgb(255, 255, 255)'
+```
+
+### to_rgba
+
+将颜色转换为 RGBA 格式色值
+
+```python
+color = 'rgba(255, 255, 255, .5)'
+to_rgba(color) # 'rgba(255, 255, 255, 0.5)'
+
+color = '#FFFFFFCC'
+to_rgba(color) # 'rgba(255, 255, 255, 0.8)'
 ```
 
 ### get_brightness
