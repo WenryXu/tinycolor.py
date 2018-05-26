@@ -470,7 +470,7 @@ def is_light(color):
     return not is_dark(color)
 
 def main():
-    print(to_hex8('#FFFC'))
+    pass
 
 if __name__ == '__main__':
     main()
