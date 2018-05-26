@@ -136,7 +136,7 @@ to_hex(color) # '#FFFFFF'
 
 ### to_hex8
 
-将颜色转换为 Hex8 格式色值
+将颜色转换为 8-digit Hex 格式色值
 
 ```python
 color = 'rgb(255, 255, 255, .8)'
